@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +39,17 @@ public class EmployeeProjectDetailService {
 
 	@Autowired
 	private ProjectAssignmentHistoryRepository projectAssignmentHistoryRepository;
-	
+
 	@Autowired
 	private ProjectTypeRepository projectTypeRepository;
-	
+
 	@Autowired
 	private ProjectCodeRepository projectCodeRepository;
-	
+
 	@Autowired
 	private TaskRepository taskRepository;
 
-	public Response updateProject(EmployeeProjectDetailsPojo employeeProjectDetails, Long empSAPID)
-			throws Exception {
+	public Response updateProject(EmployeeProjectDetailsPojo employeeProjectDetails, Long empSAPID) throws Exception {
 		if (!this.employeeProjectDetailRepository.existsById(empSAPID)) {
 			throw new ValueNotPresentException("SAP Id is incorrect");
 		}
@@ -65,10 +65,6 @@ public class EmployeeProjectDetailService {
 		}
 		if (!StringUtils.isBlank(employeeProjectDetails.getLocation())) {
 			data.setLocation(employeeProjectDetails.getLocation());
-			flag = false;
-		}
-		if (!StringUtils.isBlank(employeeProjectDetails.getCustomerName())) {
-			data.setCustomerName(employeeProjectDetails.getCustomerName());
 			flag = false;
 		}
 		if (employeeProjectDetails.getProjUid() != null) {
@@ -104,13 +100,16 @@ public class EmployeeProjectDetailService {
 	}
 
 	public ProjectDetailsResponse addRecord(EmployeeProjectDetailsPojo employeeProjectDetails) throws Exception {
+
 		ProjectDetailsResponse pa = new ProjectDetailsResponse();
 		List<Long> list = employeeProjectDetails.getEmpSAPID();
 		ListIterator<Long> itr = list.listIterator();
 		List<Long> duplicateSapId = new ArrayList<>();
 		List<Long> assignedSapId = new ArrayList<>();
+		List<Long> unassignedSapId = new ArrayList<>();
 		List<Long> existingAssignedSapId = new ArrayList<>();
 		List<Long> nonExistingSapId = new ArrayList<>();
+		String randomPattern = "";
 		while (itr.hasNext()) {
 			EmployeeProjectDetails employee = new EmployeeProjectDetails();
 			Long sapId = itr.next();
@@ -119,20 +118,19 @@ public class EmployeeProjectDetailService {
 				// EmpSAPId!");
 				duplicateSapId.add(sapId);
 
-			} else if (employeeDetailsRepository.findBySapId(sapId)!=null) {
-				System.out.println(
-						employeeDetailsRepository.getBySapId(sapId).getProjAssignedStatus() + " getProjAssignedStatus");
-				if (!employeeDetailsRepository.getBySapId(sapId).getProjAssignedStatus()) {
+			} else if (employeeDetailsRepository.findBySapId(sapId) != null) {
+				System.out.println(employeeDetailsRepository.findBySapId(sapId).getProjAssignedStatus()
+						+ " getProjAssignedStatus");
+				if (!employeeDetailsRepository.findBySapId(sapId).getProjAssignedStatus()) {
 
 					employee.setEmpSAPID(sapId);
 					employee.setCountry(employeeProjectDetails.getCountry());
 					employee.setReportingMgrSAPID(employeeProjectDetails.getReportingMgrSAPID());
 					employee.setLocation(employeeProjectDetails.getLocation());
-					employee.setCustomerName(employeeProjectDetails.getCustomerName());
-					employee.setFresher(employeeProjectDetails.getFresher());
+					employee.setFresher("1");
 					employee.setAssignmentStartDate(employeeProjectDetails.getAssignmentStartDate());
 					employee.setAssignmentEndDate(employeeProjectDetails.getAssignmentEndDate());
-					employee.setFte(employeeProjectDetails.getFte());
+					employee.setFte(1);
 					employee.setHrL4Id(employeeProjectDetails.getHrL4Id());
 					employee.setJob(employeeProjectDetails.getJob());
 					employee.setLastProjectName(employeeProjectDetails.getLastProjectName());
@@ -142,40 +140,58 @@ public class EmployeeProjectDetailService {
 					employee.setRasStatus(employeeProjectDetails.getRasStatus());
 					employee.setCreatedBy(employeeProjectDetails.getCreatedBy());
 					employee.setCreatedDate(employeeProjectDetails.getCreatedDate());
-					employee.setUpdatedBy(employeeProjectDetails.getUpdatedBy());
-					employee.setUpdatedDate(employeeProjectDetails.getUpdatedDate());
 					employee.setSr(employeeProjectDetails.getSr());
-					employee.setTransactionId(employeeProjectDetails.getTransactionId());
+					int patternLength = 8; // Length of the random pattern
+					// Define the character set or range for the pattern
+					String charSet = "0123456789";
 
-					this.employeeProjectDetailRepository.save(employee);
+					// Create an instance of Random
+					Random random = new Random();
+
+					// Generate the random pattern
+					StringBuilder patternBuilder = new StringBuilder();
+					for (int i = 0; i < patternLength; i++) {
+						int randomIndex = random.nextInt(charSet.length());
+						char randomChar = charSet.charAt(randomIndex);
+						patternBuilder.append(randomChar);
+					}
+
+					randomPattern = patternBuilder.toString();
+					employee.setTransactionId(randomPattern);
+
+					employeeProjectDetailRepository.save(employee);
 					assignedSapId.add(sapId);
 
 					EmployeeDetails employeeDetails = employeeDetailsRepository.getBySapId(sapId);
 					employeeDetails.setProjAssignedStatus(true);
+
 					employeeDetailsRepository.save(employeeDetails);
-					
+
 					Task task = new Task();
 					task.setUserId(sapId);
-					taskRepository.save(task);
+
+					if (taskRepository.findByUserId(sapId.longValue()) == null) {
+						taskRepository.save(task);
+					}
 					
-				} else // throw new ValueNotPresentException("Project already Assigned!");
-				{
+				} else {
 					existingAssignedSapId.add(sapId);
 				}
+			} else 
 
-			} else // throw new ValueNotPresentException("EmpSAPId does not exist.");
 			{
 				nonExistingSapId.add(sapId);
 			}
+
 		}
+
 		pa.setDuplicateSapId(duplicateSapId);
 		pa.setAssignedSapId(assignedSapId);
+		pa.setUnassignedSapId(unassignedSapId);
+		pa.setTransactionId(randomPattern);
 		pa.setExistingAssignedSapId(existingAssignedSapId);
 		pa.setNonExistingSapId(nonExistingSapId);
 		return pa;
-		// "Project Successfully Assigned:"+assignedSapId+", Project Already
-		// Assigned:"+existingAssignedSapId+", Dupliacte SAPID :"+ duplicateSapId+",
-		// Non-Existing SAPID:"+nonExistingSapId ;
 	}
 
 	public Response unassignproject(Long empSAPID) throws Exception {
@@ -194,7 +210,7 @@ public class EmployeeProjectDetailService {
 		projectAssignmentHistory.setAssignment_end_date(employeeProjectDetails.getAssignmentEndDate());
 		projectAssignmentHistory.setProjUid(employeeProjectDetails.getProjUid());
 		projectAssignmentHistory.setSkill(employeeProjectDetails.getSkill());
-		projectAssignmentHistory.setTransactionId(employeeProjectDetails.getTransactionId());
+		projectAssignmentHistory.setTransactionId(employeeProjectDetails.getTransactionId()); 
 		projectAssignmentHistoryRepository.save(projectAssignmentHistory);
 
 		this.employeeProjectDetailRepository.deleteById(empSAPID);
@@ -205,19 +221,19 @@ public class EmployeeProjectDetailService {
 		return new Response("Project unassigned Successfully");
 
 	}
-	
+
 	public ProjectDetails fetchingProjectDetails(String projectCode) {
-        System.out.println(projectCode);
-        ProjectCode pCode=this.projectCodeRepository.findByProjectCode(projectCode);
-        System.out.println(" pcode "+pCode);
-        List<EmployeeProjectDetails> epdetails=this.employeeProjectDetailRepository.findAllByProjUid(pCode.getUid());
-        ProjectDetails projectDetails=new ProjectDetails();
-        projectDetails.setProjectName(pCode.getProjectName());
-        projectDetails.setProjectCode(pCode.getProjectCode());
-        projectDetails.setCurrentTeamStrength(pCode.getProject_strength());
-        projectDetails.setTotalCandidatesRequired(100);
-        projectDetails.setTotalFreshersDeployed(epdetails.size());
-        return projectDetails;
-    }
+		System.out.println(projectCode);
+		ProjectCode pCode = this.projectCodeRepository.findByProjectCode(projectCode);
+		System.out.println(" pcode " + pCode);
+		List<EmployeeProjectDetails> epdetails = this.employeeProjectDetailRepository.findAllByProjUid(pCode.getUid());
+		ProjectDetails projectDetails = new ProjectDetails();
+		projectDetails.setProjectName(pCode.getProjectName());
+		projectDetails.setProjectCode(pCode.getProjectCode());
+		projectDetails.setCurrentTeamStrength(pCode.getProject_strength());
+		projectDetails.setTotalCandidatesRequired(100);
+		projectDetails.setTotalFreshersDeployed(epdetails.size());
+		return projectDetails;
+	}
 
 }

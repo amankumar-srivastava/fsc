@@ -7,5 +7,7 @@ import com.hcl.fsc.entities.Task;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
+	
+	public Task findByUserId(long userId);
 
 }

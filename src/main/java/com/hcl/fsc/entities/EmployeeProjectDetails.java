@@ -9,78 +9,69 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
 @Entity
 @DynamicUpdate
 public class EmployeeProjectDetails {
-	
+
 	@Id
-    private Long empSAPID;
- 
-	@NotNull(message ="ReportingMgrSAPID is mandatory!")
-    private Integer reportingMgrSAPID;
+	private Long empSAPID;
 
-	@NotBlank(message ="Location is mandatory!")
-    private String location;
+	@NotNull(message = "ReportingMgrSAPID is mandatory!")
+	private Integer reportingMgrSAPID;
 
-	@NotBlank(message ="Country is mandatory!")
-    private String country;
+	@NotBlank(message = "Location is mandatory!")
+	private String location;
 
-    @NotNull(message ="HrL4Id is mandatory!")
-    private Integer hrL4Id;
- 
-    private String lastProjectName;
+	@NotBlank(message = "Country is mandatory!")
+	private String country;
 
-    private String customerName;
+	@NotNull(message = "HrL4Id is mandatory!")
+	private Integer hrL4Id;
 
-    @NotNull(message ="AssignmentStartDate is mandatory!")
-//    @Past(message="Please enter date from past in format YYYY-MM-DD")
-    private LocalDate assignmentStartDate;
+	private String lastProjectName;
 
-    @NotNull(message ="AssignmentEndDate is mandatory!")
-//    @Future(message="Please enter date from future in format YYYY-MM-DD")
-    private LocalDate assignmentEndDate;
-    
-    @NotBlank(message ="RasStatus is mandatory!")
-    private String rasStatus; 
+	@NotNull(message = "AssignmentStartDate is mandatory!")
+	private LocalDate assignmentStartDate;
 
-    @NotBlank(message ="Fresher is mandatory!")
-    private String fresher;
-    
-    @NotBlank(message ="OnOffshore is mandatory!")
-    private String onOff;
-    
-    @NotNull(message ="ProjUId is mandatory!")
-    private Integer projUid;
+	@NotNull(message = "AssignmentEndDate is mandatory!")
+	private LocalDate assignmentEndDate;
 
-    @NotBlank(message ="Job is mandatory!")
-    private String job;
-    
-    @NotBlank(message ="Skill is mandatory!")
-    private String skill;
+	private String rasStatus;
 
-    @NotNull(message ="FTE is mandatory!")
-    private Integer fte;
-    
-    @NotBlank(message ="CreatedBy is mandatory!")
-    private String createdBy;
+	private String fresher;
 
-    @NotNull(message ="CreatedDate is mandatory!")
-    private LocalDate createdDate;
+	@NotBlank(message = "OnOffshore is mandatory!")
+	private String onOff;
 
-    @NotBlank(message ="UpdatedBy is mandatory!")
-    private String updatedBy;
+	@NotNull(message = "ProjUId is mandatory!")
+	private Integer projUid;
 
-    @NotNull(message ="UpdatedDate is mandatory!")
-    private LocalDate updatedDate;
-    
-    @NotBlank(message ="SR is mandatory!")
-    private String sr;
-    
-    @Column(name="transaction_id")
-    private Integer	transactionId; 
+	@NotBlank(message = "Job is mandatory!")
+	private String job;
+
+	@NotBlank(message = "Skill is mandatory!")
+	private String skill;
+
+	private Integer fte;
+
+	@NotBlank(message = "CreatedBy is mandatory!")
+	private String createdBy;
+
+	@NotNull(message = "CreatedDate is mandatory!")
+	private LocalDate createdDate;
+
+	private String updatedBy;
+
+	private LocalDate updatedDate;
+
+	private String sr;
+
+	@Column(name = "transaction_id")
+	@NotBlank(message = "Incorrect transactionId")
+	private String transactionId;
 
 }

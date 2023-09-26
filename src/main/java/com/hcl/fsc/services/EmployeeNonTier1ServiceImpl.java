@@ -152,6 +152,7 @@ public class EmployeeNonTier1ServiceImpl {
 			Set<String> stateSet = masterTablePossibleValuesRepository.findAll().stream()
 					.filter(e -> e.getMasterTable().toLowerCase().equals("state")).map(e -> e.getValue().toLowerCase())
 					.collect(Collectors.toSet());
+			      System.out.println(stateSet);
 
 			Set<String> ugOrPgSet = masterTablePossibleValuesRepository.findAll().stream()
 					.filter(e -> e.getMasterTable().toLowerCase().equals("ugorpg")).map(e -> e.getValue().toLowerCase())

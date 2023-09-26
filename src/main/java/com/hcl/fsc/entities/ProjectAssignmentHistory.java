@@ -34,6 +34,6 @@ public class ProjectAssignmentHistory {
 	private String skill;
 
 	@Column(name = "transaction_id")
-	private Integer transactionId;
+	private String transactionId;
 
 }

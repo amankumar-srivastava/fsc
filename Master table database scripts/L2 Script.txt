@@ -1,0 +1,23 @@
+CREATE TABLE MASTER_L2 
+(
+    UID	int not null auto_increment unique,
+    'KEY' VARCHAR(50) not null,
+    VALUE VARCHAR(50) not null,
+    primary key('KEY')
+);
+
+INSERT INTO  MASTER_L2(UID,'KEY',VALUE) VALUES
+	('1', 'ERS-ERS', 'ERS-ERS'),
+	('2', 'ERS-CET', 'ERS-CET'),
+	('3', 'ERS-T&S', 'ERS-T&S'),
+	('4', 'ERS-SIE', 'ERS-SIE'),
+	('5', 'ERS MMT-DIGITAL TECH', 'ERS MMT-DIGITAL TECH'),
+	('6', 'ERS MMT-TRANSPORTATION', 'ERS MMT-TRANSPORTATION'),
+	('7', 'Unmapped', 'Unmapped'),
+	('8', 'ERS MMT-MFG', 'ERS MMT-MFG'),
+	('9', 'ERS MMT-MEDICAL', 'ERS MMT-MEDICAL'),
+	('10', 'ERS EBT - MODE 2', 'ERS EBT - MODE 2'),
+	('11', 'ERS-ET2', 'ERS-ET2'),
+	('12', 'ERS MMT-MMT', 'ERS MMT-MMT'),
+	('13', 'ERS Research-Research', 'ERS Research-Research');
+    

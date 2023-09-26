@@ -1,0 +1,12 @@
+CREATE TABLE MASTER_COLLEGE_TIERING 
+(
+    UID	int not null auto_increment unique,
+    'KEY' VARCHAR(20) not null,
+    VALUE VARCHAR(20) not null,
+    primary key('KEY')
+);
+
+INSERT INTO MASTER_COLLEGE_TIERING(UID,'KEY',VALUE) VALUES
+	('1', 'TIER 1', 'Tier-1'),
+	('2', 'TIER 2', 'Tier-2'),
+	('3', 'TIER 3', 'Tier-3');

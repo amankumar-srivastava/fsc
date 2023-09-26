@@ -1,0 +1,11 @@
+create table MASTER_GENDER(
+	UID int not null auto_increment unique,
+    'KEY' varchar(20) not null,
+    VALUE varchar(20) not null,
+    primary key('KEY')
+);
+
+insert into MASTER_GENDER(UID,'KEY',VALUE) values(1,"MALE","Male"),
+("FEMALE","female"),
+("TRANSGENDER","Others");
+

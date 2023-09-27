@@ -34,11 +34,13 @@ import com.hcl.fsc.response.Response;
 import com.hcl.fsc.services.MasterTableServiceImpl;
 import com.hcl.fsc.services.master.CustomerNameService;
 import com.hcl.fsc.services.master.HrL4Service;
+import com.hcl.fsc.services.master.JobService;
 import com.hcl.fsc.services.master.ProjectCodeAndTypeExcelService;
 import com.hcl.fsc.services.master.ProjectCodeService;
 import com.hcl.fsc.services.master.ProjectL4Service;
 import com.hcl.fsc.services.master.ProjectTypeService;
 import com.hcl.fsc.services.master.RmService;
+import com.hcl.fsc.services.master.SkillService;
 
 import jakarta.validation.Valid;
 
@@ -69,6 +71,12 @@ public class MasterTableController {
 
 	@Autowired
 	private ProjectCodeAndTypeExcelService projectCodeAndTypeExcelService;
+	
+	@Autowired
+	private JobService jobService;
+	
+	@Autowired
+	private SkillService skillService;
 
 	private static final Logger log = LoggerFactory.getLogger(MasterTableController.class);
 	
@@ -185,6 +193,19 @@ public class MasterTableController {
 		log.info("Calling Get All Mapping for Project Type Master Table");
 		return this.projectTypeService.getAllProjectType();
 	}
+	
+
+	@GetMapping("master/job")
+	public  ResponseEntity<?> getJobList(){
+		log.info("Calling GET All Mapping for Job Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.jobService.getAllJob());
+	}
+	
+	@GetMapping("master/skill")
+	public  ResponseEntity<?> getSkillList(){
+		log.info("Calling GET All Mapping for Job Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.getAllSkill());
+	}
 
 //	-----------------------------Get Mapping By Id--------------------------------------------
 
@@ -223,6 +244,7 @@ public class MasterTableController {
 		log.info("Calling GET Mapping by UID " + uid + " for Project Type Master Table");
 		return ResponseEntity.status(HttpStatus.OK).body(this.projectTypeService.getProjectTypeById(uid));
 	}
+	
 
 //	------------------------------Post Mapping--------------------------------------------------------
 	@PostMapping("master/projectcode")

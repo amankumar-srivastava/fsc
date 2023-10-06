@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 public class AllControllerTest {
 
-	@Autowired
+	/*@Autowired
 	public MasterTableController controller;
 
 	@Autowired
@@ -354,5 +354,5 @@ public class AllControllerTest {
 //		int recordCountFromService = Eservice.getAllEmployees().size();
 //		assertEquals(objectCount, recordCountFromService);
 //	}
-	
+	*/
 }

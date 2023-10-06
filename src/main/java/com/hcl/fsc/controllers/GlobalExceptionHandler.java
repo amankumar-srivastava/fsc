@@ -22,6 +22,7 @@ import com.hcl.fsc.response.Response;
 
 @RestControllerAdvice
 @CrossOrigin("*")
+//@CrossOrigin(origins = "*")
 public class GlobalExceptionHandler {
 	
 	private static final Logger log = LoggerFactory.getLogger(MasterTableController.class);
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<?> handleNullPointerException(NoSuchElementException e) {
 		Response res = new Response("No Such record is present");
+		log.error("No Such record is present");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 	}
 	
@@ -49,7 +51,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleException(Exception e) {
-		log.warn("Internal Server Error");
+		log.error("Internal Server Error");
 		Response res = new Response("Something Went Wrong");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 	}

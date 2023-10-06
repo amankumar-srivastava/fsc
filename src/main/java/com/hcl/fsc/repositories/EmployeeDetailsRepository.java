@@ -12,5 +12,4 @@ public interface EmployeeDetailsRepository extends JpaRepository<EmployeeDetails
 	public EmployeeDetails findBySapId(Long sapId);
 	public EmployeeDetails getBySapId(Long sapId);
 	
-
 }

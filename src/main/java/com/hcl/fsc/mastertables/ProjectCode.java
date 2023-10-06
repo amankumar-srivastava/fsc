@@ -28,11 +28,7 @@ public class ProjectCode {
 	private String projectCode;
 
 	private String projectName;
-
-	@ManyToOne
-	@JoinColumn(name = "project_type_uid")
-	private ProjectType projectType;
-
+	
 	@Column(name="project_strength")
 	private Integer project_strength;
 
@@ -54,4 +50,11 @@ public class ProjectCode {
 	@Column(name="bussiness_area")
 	private String bussinessArea;
 
+	@ManyToOne
+	@JoinColumn(name = "project_type_uid")
+	private ProjectType projectType;
+	
+	@ManyToOne
+	@JoinColumn(name="customer_name_uid")
+	private CustomerName customerName;
 }

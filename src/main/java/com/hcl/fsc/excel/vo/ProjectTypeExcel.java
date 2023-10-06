@@ -19,7 +19,10 @@ public class ProjectTypeExcel {
 	@ExcelCellName("Proj Category")
 	private String projectType;
 	
+	@ExcelCellName("Customer Name")
+	private String customerName; 
+	
 	@ExcelCellName("Proj End Dt")
 	private LocalDate projectEndDate;
-
+	
 }

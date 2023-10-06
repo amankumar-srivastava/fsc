@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -61,8 +60,8 @@ public class EmployeeProjectDetails {
 	@NotBlank(message = "CreatedBy is mandatory!")
 	private String createdBy;
 
-	@NotNull(message = "CreatedDate is mandatory!")
-	private LocalDate createdDate;
+//	@NotNull(message = "CreatedDate is mandatory!")
+//	private LocalDate createdDate;
 
 	private String updatedBy;
 

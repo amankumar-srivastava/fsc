@@ -29,5 +29,7 @@ public class ProjectCodePojo {
 	private String updatedBy;
 	
     private String bussinessArea;
-
+    
+    private Integer customerName;
+    
 }

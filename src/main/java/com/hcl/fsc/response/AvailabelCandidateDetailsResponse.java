@@ -14,7 +14,4 @@ public class AvailabelCandidateDetailsResponse {
 	private String gradSpecialisation;
 	private String collegeTier;
 	private String status;
-//	private String actionId;
-//	private String taskOwner;
-
 }

@@ -11,5 +11,7 @@ public interface CustomerNameRepository extends JpaRepository<CustomerName, Inte
 	public CustomerName findTopByOrderByUidDesc();
 
 	public boolean existsCustomerNameBycustomerName(String customerName);
-
+	
+	public CustomerName findBycustomerName(String customerName);
+	
 }

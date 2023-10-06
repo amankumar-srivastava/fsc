@@ -39,6 +39,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin("*")
+//@CrossOrigin(origins = "*")
 public class EmployeeController {
 
 	@Autowired

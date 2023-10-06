@@ -14,10 +14,12 @@ import com.hcl.fsc.customExpcetion.DuplicateValueException;
 import com.hcl.fsc.customExpcetion.NullValueException;
 import com.hcl.fsc.customExpcetion.ValueNotPresentException;
 import com.hcl.fsc.entities.EmployeeProjectDetails;
+import com.hcl.fsc.mastertables.CustomerName;
 import com.hcl.fsc.mastertables.ProjectCode;
 import com.hcl.fsc.mastertables.ProjectType;
 import com.hcl.fsc.pojo.ProjectCodePojo;
 import com.hcl.fsc.repositories.EmployeeProjectDetailRepository;
+import com.hcl.fsc.repositories.master.CustomerNameRepository;
 import com.hcl.fsc.repositories.master.ProjectCodeRepository;
 import com.hcl.fsc.repositories.master.ProjectTypeRepository;
 import com.hcl.fsc.response.Response;
@@ -31,7 +33,9 @@ public class ProjectCodeService {
 
 	@Autowired
 	private ProjectTypeRepository projectTypeRepository;
-
+	
+	private CustomerNameRepository customerNameRepository;
+	
 	@Autowired
 	private EmployeeProjectDetailRepository employeeProjectDetailRepository;
 
@@ -69,6 +73,9 @@ public class ProjectCodeService {
 		if (!this.projectTypeRepository.existsById(projectCode.getProjectType())) {
 			throw new ValueNotPresentException("Wrong Project Type: "+projectCode.getProjectType());
 		}
+		if(this.customerNameRepository.existsById(projectCode.getCustomerName())) {
+			throw new ValueNotPresentException("Wrong Customer Name: "+projectCode.getCustomerName());
+		}
 		if (this.projectCodeRepository.existsProjectCodeByprojectCode(projectCode.getProjectCode())) {
 			throw new DuplicateValueException("Duplicate Project Code: "+ projectCode.getProjectCode());
 		}
@@ -88,8 +95,10 @@ public class ProjectCodeService {
 			project.setProjectCode(projectCode.getProjectCode());
 			project.setBussinessArea(projectCode.getBussinessArea());
 			project.setProject_strength(projectCode.getProject_strength());
-			ProjectType projectType = this.projectTypeRepository.getById(projectCode.getProjectType());
+			ProjectType projectType = this.projectTypeRepository.findById(projectCode.getProjectType()).get();
+			CustomerName customerName = this.customerNameRepository.findById(projectCode.getCustomerName()).get();
 			project.setProjectType(projectType);
+			project.setCustomerName(customerName);
 			project.setCreatedDate(LocalDateTime.now());
 			project.setEndDate(projectCode.getEndDate());
 			project.setCreatedBy(projectCode.getCreatedBy());
@@ -116,6 +125,9 @@ public class ProjectCodeService {
 				&& !this.projectTypeRepository.existsById(projectCode.getProjectType())) {
 			throw new ValueNotPresentException("Wrong Project Type: " +projectCode.getProjectType());
 		}
+		if(this.customerNameRepository.existsById(projectCode.getCustomerName())) {
+			throw new ValueNotPresentException("Wrong Customer Name: "+projectCode.getCustomerName());
+		}
 		if (projectCode.getUpdatedBy() == null) {		
 			throw new NullValueException("Updated By is Empty");
 		}
@@ -138,6 +150,10 @@ public class ProjectCodeService {
 			if (projectCode.getProjectType() != null) {
 				ProjectType projectType = this.projectTypeRepository.getById(projectCode.getProjectType());
 				pc.setProjectType(projectType);
+			}
+			if (projectCode.getCustomerName() != null) {
+				CustomerName customerName = this.customerNameRepository.getById(projectCode.getCustomerName());
+				pc.setCustomerName(customerName);
 			}
 			if (projectCode.getProject_strength() != null) {
 				pc.setProject_strength(projectCode.getProject_strength());

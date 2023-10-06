@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-
 public class ProjectDetailsResponse {
 
 	private List<Long> assignedSapId;

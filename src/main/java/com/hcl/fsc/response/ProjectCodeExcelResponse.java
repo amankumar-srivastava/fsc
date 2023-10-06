@@ -7,5 +7,5 @@ public class ProjectCodeExcelResponse {
 
 	private Integer projectCode;
 	private Integer projectType;
-
+	private Integer customerName;
 }

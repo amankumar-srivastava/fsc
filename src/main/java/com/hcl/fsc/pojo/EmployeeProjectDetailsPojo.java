@@ -6,7 +6,6 @@ import java.util.List;
 import com.hcl.fsc.mastertables.ProjectCode;
 
 import lombok.Data;
-
 @Data
 public class EmployeeProjectDetailsPojo {
 
@@ -22,8 +21,6 @@ public class EmployeeProjectDetailsPojo {
     private Integer hrL4Id;
 
     private String lastProjectName;
-
-    private String customerName;
 
     private LocalDate assignmentStartDate;
 
@@ -45,7 +42,7 @@ public class EmployeeProjectDetailsPojo {
     
     private String createdBy;
 
-    private LocalDate createdDate;
+//    private LocalDate createdDate;
 
     private String updatedBy;
 
@@ -53,7 +50,7 @@ public class EmployeeProjectDetailsPojo {
     
     private String sr;
     
-    private Integer	transactionId; 
+    private String	transactionId; 
 
 	
 }

@@ -17,7 +17,7 @@ public class MasterTablePossibleValues {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
-	private String value;
+	private String value; 
 	private String key;
 	private String masterTable;
 

@@ -4,13 +4,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Optional;
+import java.util.Random;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hcl.fsc.controllers.MasterTableController;
 import com.hcl.fsc.customExpcetion.ValueNotPresentException;
 import com.hcl.fsc.entities.EmployeeDetails;
 import com.hcl.fsc.entities.EmployeeProjectDetails;
@@ -48,6 +51,8 @@ public class EmployeeProjectDetailService {
 
 	@Autowired
 	private TaskRepository taskRepository;
+
+	private static final Logger log = LoggerFactory.getLogger(MasterTableController.class);
 
 	public Response updateProject(EmployeeProjectDetailsPojo employeeProjectDetails, Long empSAPID) throws Exception {
 		if (!this.employeeProjectDetailRepository.existsById(empSAPID)) {
@@ -100,7 +105,7 @@ public class EmployeeProjectDetailService {
 	}
 
 	public ProjectDetailsResponse addRecord(EmployeeProjectDetailsPojo employeeProjectDetails) throws Exception {
-
+		log.info("Validating data in Employee Project Details" + employeeProjectDetails);
 		ProjectDetailsResponse pa = new ProjectDetailsResponse();
 		List<Long> list = employeeProjectDetails.getEmpSAPID();
 		ListIterator<Long> itr = list.listIterator();
@@ -109,17 +114,19 @@ public class EmployeeProjectDetailService {
 		List<Long> unassignedSapId = new ArrayList<>();
 		List<Long> existingAssignedSapId = new ArrayList<>();
 		List<Long> nonExistingSapId = new ArrayList<>();
+
 		String randomPattern = "";
 		while (itr.hasNext()) {
 			EmployeeProjectDetails employee = new EmployeeProjectDetails();
 			Long sapId = itr.next();
+			log.info("Checking data in Employee Project Details exists or not");
 			if (this.employeeProjectDetailRepository.existsById(sapId)) {
 				// throw new ValueNotPresentException("Project cannot be assigned to Duplicate
 				// EmpSAPId!");
 				duplicateSapId.add(sapId);
 
 			} else if (employeeDetailsRepository.findBySapId(sapId) != null) {
-				System.out.println(employeeDetailsRepository.findBySapId(sapId).getProjAssignedStatus()
+				log.info(employeeDetailsRepository.findBySapId(sapId).getProjAssignedStatus()
 						+ " getProjAssignedStatus");
 				if (!employeeDetailsRepository.findBySapId(sapId).getProjAssignedStatus()) {
 
@@ -139,9 +146,10 @@ public class EmployeeProjectDetailService {
 					employee.setSkill(employeeProjectDetails.getSkill());
 					employee.setRasStatus(employeeProjectDetails.getRasStatus());
 					employee.setCreatedBy(employeeProjectDetails.getCreatedBy());
-					employee.setCreatedDate(employeeProjectDetails.getCreatedDate());
+//					employee.setCreatedDate(employeeProjectDetails.getCreatedDate());
 					employee.setSr(employeeProjectDetails.getSr());
-					int patternLength = 8; // Length of the random pattern
+					int patternLength = 8;
+					// Length of the random pattern
 					// Define the character set or range for the pattern
 					String charSet = "0123456789";
 
@@ -158,31 +166,39 @@ public class EmployeeProjectDetailService {
 
 					randomPattern = patternBuilder.toString();
 					employee.setTransactionId(randomPattern);
+					log.info("Saving data in Employee Project Details");
 
-					employeeProjectDetailRepository.save(employee);
+					this.employeeProjectDetailRepository.save(employee);
+					log.info("Saved Sucessfully data in Employee Project Details");
 					assignedSapId.add(sapId);
-
+					log.info("Checking data in Employee Details Table Module-1");
 					EmployeeDetails employeeDetails = employeeDetailsRepository.getBySapId(sapId);
 					employeeDetails.setProjAssignedStatus(true);
-
+					log.info("Changing Status in Employee Details Table Module-1");
 					employeeDetailsRepository.save(employeeDetails);
-
+					log.info("Status changed in Employee Details Table Module-1");
+					
 					Task task = new Task();
 					task.setUserId(sapId);
-
+					log.info("saving data in task Table Module-2");
 					if (taskRepository.findByUserId(sapId.longValue()) == null) {
 						taskRepository.save(task);
+						log.info("saved data in task Table Module-2");
 					}
-					
-				} else {
+					log.info("Assignation Completed!!!");
+				}
+
+				else {
+
 					existingAssignedSapId.add(sapId);
 				}
-			} else 
+			}
+
+			else // throw new ValueNotPresentException("EmpSAPId does not exist.");
 
 			{
 				nonExistingSapId.add(sapId);
 			}
-
 		}
 
 		pa.setDuplicateSapId(duplicateSapId);
@@ -191,6 +207,7 @@ public class EmployeeProjectDetailService {
 		pa.setTransactionId(randomPattern);
 		pa.setExistingAssignedSapId(existingAssignedSapId);
 		pa.setNonExistingSapId(nonExistingSapId);
+		log.info("Returing response!!!");
 		return pa;
 	}
 
@@ -210,7 +227,7 @@ public class EmployeeProjectDetailService {
 		projectAssignmentHistory.setAssignment_end_date(employeeProjectDetails.getAssignmentEndDate());
 		projectAssignmentHistory.setProjUid(employeeProjectDetails.getProjUid());
 		projectAssignmentHistory.setSkill(employeeProjectDetails.getSkill());
-		projectAssignmentHistory.setTransactionId(employeeProjectDetails.getTransactionId()); 
+		projectAssignmentHistory.setTransactionId(employeeProjectDetails.getTransactionId());
 		projectAssignmentHistoryRepository.save(projectAssignmentHistory);
 
 		this.employeeProjectDetailRepository.deleteById(empSAPID);

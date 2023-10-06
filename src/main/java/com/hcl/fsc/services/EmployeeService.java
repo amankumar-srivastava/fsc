@@ -18,6 +18,7 @@ import com.hcl.fsc.repositories.EmployeeDetailsRepository;
 import com.hcl.fsc.repositories.EmployeeEducationalDetailsRepository;
 import com.hcl.fsc.repositories.EmployeeOnboardingDetailsRepository;
 import com.hcl.fsc.repositories.EmployeeRecruitmentDetailsRepository;
+import com.hcl.fsc.repositories.master.ProjectCodeRepository;
 import com.hcl.fsc.response.AvailabelCandidateDetailsResponse;
 import com.hcl.fsc.response.LeadershipDashboardResponse;
 
@@ -35,6 +36,9 @@ public class EmployeeService {
 
 	@Autowired
 	private EmployeeOnboardingDetailsRepository employeeOnboardingDetailsRepository;
+
+	@Autowired
+	private ProjectCodeRepository projectCodeRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(MasterTableController.class);
 
@@ -80,7 +84,9 @@ public class EmployeeService {
 
 	}
 
+
 	public List<AvailabelCandidateDetailsResponse> getAvailableCandidatesDetails() {
+		log.info("Available Employee details fetching");
 
 		List<EmployeeDetails> employeeDetailsList = employeeDetailsRepository.findAll();
 		List<EmployeeEducationalDetails> employeeEducationalDetailsList = employeeEducationalDetailsRepository
@@ -118,22 +124,24 @@ public class EmployeeService {
 						.setBand(employeeOnbaordingDetailsList.get(i).getOfferedBand().getValue());
 //			availabelCandidateDetailsResponse.setActionId("12345678");
 //			availabelCandidateDetailsResponse.setTaskOwner("UNKNOWN");
-
 				availabelCandidateDetailsResponselist.add(availabelCandidateDetailsResponse);
 				availabelCandidateDetailsResponse = new AvailabelCandidateDetailsResponse();
 			}
 			i++;
 		}
+		log.info("Available Employee details fetched sucessfulyy!!");
 		return availabelCandidateDetailsResponselist;
 	}
 
 	public LeadershipDashboardResponse fetchLeadershipDashboardDetails() {
+		log.info("Leadership Dashboard Details fetching");
 		LeadershipDashboardResponse leadershipDashboardResponse = new LeadershipDashboardResponse();
 		leadershipDashboardResponse.setTotalCandidatesDeployed((long) employeeDetailsRepository.findAll().stream()
 				.filter(e -> e.getSapId() != null && e.getProjAssignedStatus()).toArray().length);
 		leadershipDashboardResponse.setTotalCandidatesAvailable((long) employeeDetailsRepository.findAll().stream()
 				.filter(e -> e.getSapId() != null && !e.getProjAssignedStatus()).toArray().length);
 		leadershipDashboardResponse.setNoOfProjectsAvailable((long) 100);
+		log.info("Leadership Dashboard Details fetched Sucessfully!!");
 		return leadershipDashboardResponse;
 	}
 

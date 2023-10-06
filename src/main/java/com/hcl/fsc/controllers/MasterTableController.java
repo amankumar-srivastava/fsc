@@ -23,12 +23,14 @@ import com.hcl.fsc.customExpcetion.ValueNotPresentException;
 import com.hcl.fsc.helpers.EmployeeHelper;
 import com.hcl.fsc.mastertables.CustomerName;
 import com.hcl.fsc.mastertables.HrL4;
+import com.hcl.fsc.mastertables.Job;
 import com.hcl.fsc.mastertables.MasterTablePossibleValues;
 import com.hcl.fsc.mastertables.MasterTables;
 import com.hcl.fsc.mastertables.ProjectCode;
 import com.hcl.fsc.mastertables.ProjectL4;
 import com.hcl.fsc.mastertables.ProjectType;
 import com.hcl.fsc.mastertables.Rm;
+import com.hcl.fsc.mastertables.Skill;
 import com.hcl.fsc.pojo.ProjectCodePojo;
 import com.hcl.fsc.response.Response;
 import com.hcl.fsc.services.MasterTableServiceImpl;
@@ -46,6 +48,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin("*")
+//@CrossOrigin(origins = "*")
 public class MasterTableController {
 
 	@Autowired
@@ -77,7 +80,8 @@ public class MasterTableController {
 	
 	@Autowired
 	private SkillService skillService;
-
+	
+	
 	private static final Logger log = LoggerFactory.getLogger(MasterTableController.class);
 	
 	@PostMapping("/masterTablePossibleValues")
@@ -141,6 +145,8 @@ public class MasterTableController {
 		int res = masterTableService.updateRecord(key, master, str);
 		if (res == 1)
 			return ResponseEntity.ok("Data updated successfully!");
+		if (res == -2)
+			return ResponseEntity.ok("Value is null or empty!");
 		else if(res==-1)
 			return ResponseEntity.ok("Data not exists in database!");
 		else
@@ -193,7 +199,7 @@ public class MasterTableController {
 		log.info("Calling Get All Mapping for Project Type Master Table");
 		return this.projectTypeService.getAllProjectType();
 	}
-	
+
 
 	@GetMapping("master/job")
 	public  ResponseEntity<?> getJobList(){
@@ -204,7 +210,7 @@ public class MasterTableController {
 	@GetMapping("master/skill")
 	public  ResponseEntity<?> getSkillList(){
 		log.info("Calling GET All Mapping for Job Master Table");
-		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.getAllSkill());
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.getAllSkills());
 	}
 
 //	-----------------------------Get Mapping By Id--------------------------------------------
@@ -245,6 +251,17 @@ public class MasterTableController {
 		return ResponseEntity.status(HttpStatus.OK).body(this.projectTypeService.getProjectTypeById(uid));
 	}
 	
+	@GetMapping("master/skill/{uid}")
+	public ResponseEntity<?> getSkillById(@Valid @PathVariable Integer uid) throws ValueNotPresentException {
+		log.info("Calling GET Mapping by UID " + uid + " for Skill Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.getSkillById(uid));
+	}
+	
+	@GetMapping("master/job/{uid}")
+	public ResponseEntity<?> getJobById(@Valid @PathVariable Integer uid) throws ValueNotPresentException {
+		log.info("Calling GET Mapping by UID " + uid + " for Job Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.jobService.getJobByUid(uid));
+	}
 
 //	------------------------------Post Mapping--------------------------------------------------------
 	@PostMapping("master/projectcode")
@@ -282,7 +299,19 @@ public class MasterTableController {
 		log.info("Calling POST MAPPING  for Project Type Master Table");
 		return ResponseEntity.status(HttpStatus.OK).body(this.projectTypeService.createNewProjectType(projectType));
 	}
-
+	
+	@PostMapping("master/skill")
+	public ResponseEntity<?> createSkill(@Valid @RequestBody Skill skill) throws Exception {
+		log.info("Calling POST MAPPING  for Skill Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.createNewSkill(skill));
+	}
+	
+	@PostMapping("master/job")
+	public ResponseEntity<?> createJob(@Valid @RequestBody Job job) throws Exception {
+		log.info("Calling POST MAPPING  for Job Master Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.jobService.createNewJob(job));
+	}
+	
 	@PostMapping("master/excel")
 	public ResponseEntity<?> createProjectTypeExcel(@RequestParam("file") MultipartFile file) throws Exception {
 		if (EmployeeHelper.checkExcelFormate(file)) {
@@ -335,6 +364,20 @@ public class MasterTableController {
 		return ResponseEntity.status(HttpStatus.OK).body(this.projectTypeService.updateProjectType(projectType, uid));
 	}
 
+	@PutMapping("master/skill/{uid}")
+	public ResponseEntity<?> updateSkill(@Valid @RequestBody Skill skill, @PathVariable Integer uid)
+			throws Exception {
+		log.info("Calling PUT MAPPING  by UID " + uid + " for Skill Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.updateSkill(skill, uid));
+	}
+	
+	@PutMapping("master/job/{uid}")
+	public ResponseEntity<?> updateJob(@Valid @RequestBody Job job, @PathVariable Integer uid)
+			throws Exception {
+		log.info("Calling PUT MAPPING  by UID " + uid + " for Job Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.jobService.updateJob(job, uid));
+	}
+	
 //	-------------------------------- Delete Mapping -------------------------------------------------
 
 	@DeleteMapping("master/projectCode/{uid}")
@@ -372,7 +415,21 @@ public class MasterTableController {
 		log.info("Calling Delete MAPPING by UID " + uid + " for Project Type Table");
 		return ResponseEntity.status(HttpStatus.OK).body(this.projectTypeService.deleteProjectTypeById(uid));
 	}
-
+	
+	@DeleteMapping("master/skill/{uid}")
+	public ResponseEntity<?> deleteSkillById(@Valid @PathVariable Integer uid) throws Exception {
+		log.info("Calling Delete MAPPING by UID " + uid + " for Skill Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.skillService.deleteSkillById(uid));
+	}
+	
+	@DeleteMapping("master/job/{uid}")
+	public ResponseEntity<?> deleteJobById(@Valid @PathVariable Integer uid) throws Exception {
+		log.info("Calling Delete MAPPING by UID " + uid + " for Job Table");
+		return ResponseEntity.status(HttpStatus.OK).body(this.jobService.deleteJobById(uid));
+	}
+	
+	
+	
 // -------------------------------------- PROJECT TYPE MAPPING-------------------------------------------
 
 	@GetMapping("projectAllocate/{uid}")

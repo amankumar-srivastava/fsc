@@ -67,7 +67,7 @@ public class ProjectCategoryService {
 		if (this.projectCategoryRepository.existsProjectCategoryByprojectCategory(projectCategory.getProjectCategory())) {
 			throw new DuplicateValueException("Duplicate Project Category");
 		} else {
-			ProjectCategory obj = this.projectCategoryRepository.getById(uid);
+		 ProjectCategory obj = this.projectCategoryRepository.getById(uid);
 			projectCategory.setUid(uid);
 			if (projectCategory.getProjectCategory() == null) {
 				projectCategory.setProjectCategory(obj.getProjectCategory());

@@ -29,7 +29,7 @@ public class Task {
 	private String task = "NEW_HIRE";
 
 	@Column(name = "Status")
-	private String Status ="Completed";
+	private String Status ="InProgress";
 
 	@Column(name = "duedate")
 	private LocalDate duedate = LocalDate.now();
